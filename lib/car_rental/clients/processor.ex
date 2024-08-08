@@ -60,9 +60,9 @@ defmodule CarRental.Clients.Processor do
 
       Logger.debug("Processed #{length(to_process)}/#{count} clients")
 
-      {state, rest}
+      rest
     end)
-    |> then(fn {state, rest} ->
+    |> then(fn rest ->
       schedule_process(@interval)
 
       {:noreply, Map.merge(state, %{clients: rest, count: length(rest)})}

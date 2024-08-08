@@ -14,6 +14,16 @@ defmodule CarRental.Clients do
     {:ok, clients}
   end
 
+  @spec build_params(list(map())) :: [Params.t()]
+  def build_params(clients) do
+    Enum.map(clients, fn client ->
+      %Params{
+        client_id: client.id,
+        score: client.score
+      }
+    end)
+  end
+
   @spec save_score_for_client(Params.t()) :: {:ok, atom()}
   def save_score_for_client(%Params{}) do
     {:ok, :saved}

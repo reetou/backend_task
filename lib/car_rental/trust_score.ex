@@ -5,6 +5,7 @@ defmodule CarRental.TrustScore do
 
   alias CarRental.TrustScore.Response
   alias CarRental.TrustScore.Params
+  alias CarRental.TrustScore.Params.ClientParams
 
   @doc """
   Calculate the trust score of a list of clients.
@@ -14,6 +15,20 @@ defmodule CarRental.TrustScore do
   alias CarRental.TrustScore.RateLimiter
 
   @clients_limit 100
+
+  @spec build_params([map()]) :: Params.t()
+  def build_params(clients) do
+    clients
+    |> Enum.map(fn client ->
+      %ClientParams{
+        client_id: client.id,
+        age: client.age,
+        license_number: client.license_number,
+        rentals_count: length(client.rental_history)
+      }
+    end)
+    |> then(fn clients -> %Params{clients: clients} end)
+  end
 
   @spec calculate_score(Params.t()) :: [Response.t()]
   def calculate_score(params) do
